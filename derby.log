@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Apr 01 12:19:48 CEST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-014c-747e-79d4-00000664ddd8 
+on database directory memory:C:\Skola\Jaro 2015\PV168 Seminar Java\Ukol4\BarrowRent_marek\barrowmgr-test with class loader sun.misc.Launcher$AppClassLoader@7d8e9adf 
+Loaded from file:/C:/Users/Branci/.m2/repository/org/apache/derby/derby/10.11.1.1/derby-10.11.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_67-b01
+user.dir=C:\Skola\Jaro 2015\PV168 Seminar Java\Ukol4\BarrowRent_marek
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
