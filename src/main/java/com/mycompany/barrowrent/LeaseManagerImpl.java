@@ -31,6 +31,11 @@ public class LeaseManagerImpl implements LeaseManager {
         this.dataSource = dataSource;
     }
     
+    private void checkDataSource() {
+        if (dataSource == null) {
+            throw new IllegalArgumentException("Data source is not set");
+        }
+    }
     
     @Override
     public void createLease(Lease lease) throws ServiceFailureException {
@@ -51,7 +56,7 @@ public class LeaseManagerImpl implements LeaseManager {
                 if (addedRows != 1) {
                     throw new ServiceFailureException("Internal Error: More rows inserted when trying to insert lease " + lease);
                 }
-                ResultSet keyRS = st.getResultSet();
+                ResultSet keyRS = st.getGeneratedKeys();
                 lease.setId(getKey(keyRS, lease));
             }
         } catch (SQLException ex) {
@@ -185,9 +190,11 @@ public class LeaseManagerImpl implements LeaseManager {
     
     @Override
     public Lease getLeaseById(Long id) throws ServiceFailureException {
+        checkDataSource();
+        
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("SELECT id,customerId,"
-                    + "barrowId,price,realEndTime,startTime,expectedEndTime FROM LEASE WHERE id=?")) {
+                    + "barrowId,price,realEndTime,startTime,expectedEndTime FROM LEASE WHERE id = ?")) {
                 st.setLong(1, id);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
@@ -204,7 +211,7 @@ public class LeaseManagerImpl implements LeaseManager {
             }
         } catch (SQLException ex) {
             log.error("db connection problem", ex);
-            throw new ServiceFailureException("Error when retrieving all leases", ex);
+            throw new ServiceFailureException("Error when retrieving all leases TUNA", ex);
         }
     }
     

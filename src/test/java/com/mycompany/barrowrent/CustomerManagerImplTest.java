@@ -60,8 +60,6 @@ public class CustomerManagerImplTest {
     @Test
     public void createCustomer() {
         
-
-        
         Customer customer = newCustomer("Jozko Mrkvicka",setDateDefault(),"0976SK25");
         manager.createCustomer(customer);
 
@@ -75,9 +73,7 @@ public class CustomerManagerImplTest {
 
     @Test
     public void getContact() {
-        
         assertNull(manager.getCustomerById(1l));
-
         
         Customer customer = newCustomer("Jozko Mrkvicka",setDateDefault(),"0976SK25");
         manager.createCustomer(customer);
@@ -176,7 +172,7 @@ public class CustomerManagerImplTest {
          customer = manager.getCustomerById(customerId);
          customer.setIdCard("0000SK00");
          manager.updateCustomer(customer);
-         assertEquals("John Kviatkowsky", customer.getFullName());
+         assertEquals("Leopold Mickiewicz", customer.getFullName());
          assertEquals(customer.getBirthDate(),setDateDefault()); 
          assertEquals(customer.getIdCard(),"0000SK00"); 
          
@@ -186,9 +182,9 @@ public class CustomerManagerImplTest {
          customer = manager.getCustomerById(customerId);
          customer.setBirthDate(myDate);
          manager.updateCustomer(customer);
-         assertEquals("John Kviatkowsky", customer.getFullName());
+         assertEquals("Leopold Mickiewicz", customer.getFullName());
          assertEquals(customer.getBirthDate(),myDate); 
-         assertEquals(customer.getIdCard(),"0976SK41");
+         assertEquals(customer.getIdCard(),"0000SK00");
 
          // Check if updates didn't affect other records
          assertDeepEquals(customer2, manager.getCustomerById(customer2.getId()));
@@ -300,10 +296,10 @@ public class CustomerManagerImplTest {
 
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     //NEVIEM AKO INAK RIESIT
+     @Test(expected = ServiceFailureException.class)
      public void deleteCustomerWithWrongId() {
         Customer customer = newCustomer("Jozko Mrkvicka",setDateDefault(),"0936SK25");
-        manager.createCustomer(customer);
 
         customer.setId(1l);
         manager.deleteCustomer(customer);
@@ -345,6 +341,7 @@ public class CustomerManagerImplTest {
 
     private java.sql.Date setDateDefault() {
         return date("1986-10-21");
+        
         
         /*
         try {

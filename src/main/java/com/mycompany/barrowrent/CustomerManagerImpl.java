@@ -44,6 +44,10 @@ public class CustomerManagerImpl implements CustomerManager {
     public void createCustomer(Customer customer) throws ServiceFailureException {
         checkDataSource();
         validate(customer);
+        if (customer.getId() != null) {
+            throw new IllegalArgumentException("customer id is already set");
+        }
+        
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("INSERT INTO CUSTOMER (fullName,birthDate,idCard) VALUES (?,?,?)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -54,7 +58,7 @@ public class CustomerManagerImpl implements CustomerManager {
                 if (addedRows != 1) {
                     throw new ServiceFailureException("Internal Error: More rows inserted when trying to insert customer " + customer);
                 }
-                ResultSet keyRS = st.getResultSet();
+                ResultSet keyRS = st.getGeneratedKeys();
                 customer.setId(getKey(keyRS, customer));
             }
         } catch (SQLException ex) {
@@ -89,6 +93,9 @@ public class CustomerManagerImpl implements CustomerManager {
     public void updateCustomer(Customer customer) throws ServiceFailureException {
         checkDataSource();
         validate(customer);
+        if (customer.getId() == null) {
+            throw new IllegalArgumentException("customer id is null");
+        }
         
         try (Connection conn = dataSource.getConnection()) {
             try(PreparedStatement st = conn.prepareStatement("UPDATE CUSTOMER SET fullName=?,birthDate=?,idCard=? WHERE id=?")) {
@@ -112,6 +119,9 @@ public class CustomerManagerImpl implements CustomerManager {
     public void deleteCustomer(Customer customer) throws ServiceFailureException {
         validate(customer);
         checkDataSource();
+        if (customer.getId() == null) {
+            throw new IllegalArgumentException("customer id is null");
+        }
         
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("DELETE FROM CUSTOMER WHERE id=?")) {
@@ -184,9 +194,6 @@ public class CustomerManagerImpl implements CustomerManager {
     private static void validate (Customer customer) {
         if (customer == null) {
             throw new IllegalArgumentException("customer is null");
-        }
-        if (customer.getId() != null) {
-            throw new IllegalArgumentException("customer id is already set");
         }
         if (customer.getFullName() == null) {
             throw new IllegalArgumentException("customer name is null");

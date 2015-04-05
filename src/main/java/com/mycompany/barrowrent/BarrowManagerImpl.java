@@ -37,6 +37,10 @@ public class BarrowManagerImpl implements BarrowManager {
     public void createBarrow(Barrow barrow) throws ServiceFailureException {
         
         validate(barrow);
+        if (barrow.getId() != null) {
+            throw new IllegalArgumentException("barrow id is already set");
+        }
+        
 
 
         try (Connection conn = dataSource.getConnection()) {
@@ -83,7 +87,10 @@ public class BarrowManagerImpl implements BarrowManager {
     public void updateBarrow(Barrow barrow) throws ServiceFailureException {
  
         validate(barrow);
-        
+        if (barrow.getId() == null) {
+            throw new IllegalArgumentException("barrow id is null");
+        }
+
         try (Connection conn = dataSource.getConnection()) {
             try(PreparedStatement st = conn.prepareStatement("UPDATE BARROW SET use=?,volumeLt=? WHERE id=?")) {
                 st.setString(1, barrow.getUse());
@@ -102,6 +109,11 @@ public class BarrowManagerImpl implements BarrowManager {
 
     @Override
     public void deleteBarrow(Barrow barrow) throws ServiceFailureException {
+        validate(barrow);
+        if (barrow.getId() == null) {
+            throw new IllegalArgumentException("barrow id is null");
+        }
+        
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("DELETE FROM BARROW WHERE id=?")) {
                 st.setLong(1, barrow.getId());
@@ -168,9 +180,6 @@ public class BarrowManagerImpl implements BarrowManager {
     static private void validate (Barrow barrow) {
         if (barrow == null) {
             throw new IllegalArgumentException("barrow is null");
-        }
-        if (barrow.getId() != null) {
-            throw new IllegalArgumentException("barrow id is already set");
         }
         if (barrow.getUse() == null) {
             throw new IllegalArgumentException("barrow use is null");

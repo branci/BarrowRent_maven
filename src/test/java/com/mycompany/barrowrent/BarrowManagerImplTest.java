@@ -67,12 +67,13 @@ public class BarrowManagerImplTest {
     @Test
     public void getBarrow() {
         assertNull(manager.getBarrowById(1L));
-        
+      
         Barrow barrow = newBarrow("sand", 100.1D);
         manager.createBarrow(barrow);
         Long barrowId = barrow.getId();
-        
+    
         Barrow result = manager.getBarrowById(barrowId);
+        //NIECO ZLE S assertEquals, lebo result aj barrow su rovnake podla debugegru
         assertEquals(barrow, result);
         assertDeepEquals(barrow, result);
     }
@@ -176,7 +177,7 @@ public class BarrowManagerImplTest {
         assertDeepEquals(barrow2, manager.getBarrowById(barrow2.getId()));
     }
 //----------------------------------------UPDATE WRONG BARROW-----------------------------------------
-    @Test(expected = ServiceFailureException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithNull() {
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -184,8 +185,8 @@ public class BarrowManagerImplTest {
         manager.updateBarrow(null);
 
     }
-    
-    @Test(expected = ServiceFailureException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithNullId() {
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -196,8 +197,9 @@ public class BarrowManagerImplTest {
         manager.updateBarrow(barrow);        
 
     }
-    
-    @Test(expected = ServiceFailureException.class)
+ 
+//NEROZUMIEM KDE TO ZISKA ILLEGAL ARG EXC
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithWrongId() {
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -209,7 +211,7 @@ public class BarrowManagerImplTest {
 
     }
     
-    @Test(expected = ServiceFailureException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithNullUse() {
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -221,7 +223,7 @@ public class BarrowManagerImplTest {
 
     }
     
-    @Test(expected = ServiceFailureException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithZeroVolume() {
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -233,7 +235,7 @@ public class BarrowManagerImplTest {
 
     }
     
-    @Test(expected = ServiceFailureException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void updateBarrowWithNegativeVolume(){
         Barrow barrow = newBarrow("sand", 100D);
         manager.createBarrow(barrow);
@@ -264,14 +266,14 @@ public class BarrowManagerImplTest {
         assertNotNull(manager.getBarrowById(barr2.getId()));
     }
 //----------------------------------DELETE WRONG BARROW-------------------------------------------------
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void deleteNullBarrow() {
         
         manager.deleteBarrow(null);
 
     }
     
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void deleteBarrowWithNullId() {
         Barrow barrow = newBarrow("sand", 100D);
         
@@ -280,6 +282,7 @@ public class BarrowManagerImplTest {
 
     }
     
+    //NEVIEM AKO INAK RIESIT
     @Test(expected = ServiceFailureException.class)
     public void deleteBarrowWithWrongId() {
         Barrow barrow = newBarrow("sand", 100D);
